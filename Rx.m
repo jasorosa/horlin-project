@@ -1,5 +1,6 @@
-function mes = Rx( ReceivedMes, beta, Fm, Fs )
-%UNTITLED3 Summary of this function goes here
+function mes = Rx(ReceivedMes)
+
+global BETA FM FS;
 
 %% Nyquist filer (rrc) 
 
@@ -7,8 +8,8 @@ sps = 40; % must match with multiplier
 span = 160; % will have to be 16*sps+1
 % G = rcosdesign(beta,span,sps,'sqrt'); % TODO !
 RRCTaps = (span*sps)+1;
-[H_rc, f, fmax] = rcosfilter(beta,RRCTaps, 1/Fm, Fs);
-G = sqrt(H_rc*Fm);
+[H_rc, ~, fmax] = rcosfilter(BETA,RRCTaps);
+G = sqrt(H_rc*FM);
 
 dt = 1/(2*fmax);
 t = (-(RRCTaps-1)/2:(RRCTaps-1)/2)*dt; % utility ?

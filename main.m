@@ -1,23 +1,26 @@
 %Main  project. 
 % Call all other function 
-numberOfBits=100;
+global NBITS BPS BETA FS FM EB_N0;
 
-beta = 0.25;
-Fs = 2e4; % Sample frequency
-Fm = 5e2; % symbol frequency
-Eb_N0 = 10; % ratio of energy_bit/noise energy in dB
 
-message=bitGenerator(numberOfBits); %creation of message of bits
+BPS = 2; %Bits per symbol
+NBITS = 100; %SE
+BETA = 0.25; %Rolloff factor
+FS = 2e4; %Sample frequency
+FM = 5e2; %symbol frequency
+EB_N0 = 10; %ratio of energy_bit/noise energy in dB
+
+message = bitGenerator(); %creation of message of bits
 
 %send to sender
-mesToSend=Tx(message, beta, Fm, Fs);
+mesToSend = Tx(message);
 
 %add noise
 
-%receivedMes=noise(mesToSend, Fs, Fm, Eb_N0); % message read at the receiver
+%receivedMes = noise(mesToSend); % message read at the receiver
 
 %receiver
-messageBack = Rx(mesToSend, beta, Fm, Fs);
+messageBack = Rx(mesToSend);
 figure
 stem(message)
 hold on
