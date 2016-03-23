@@ -1,5 +1,5 @@
 function h = rrcosfilter(beta, fm)
-    global FS NTAPS TEST TESTFILTER;
+    global FS NTAPS TEST TESTFILTERGEN;
     H = zeros(NTAPS,1);
     fmax = FS*(NTAPS-1)/(2*NTAPS);
     f = linspace(-fmax, fmax, NTAPS);
@@ -14,9 +14,8 @@ function h = rrcosfilter(beta, fm)
     end
     
     h = ifftshift(ifft(sqrt(H*fm), 'symmetric'));
-    h(ceil(NTAPS/2))
 
-    if TEST && TESTFILTER
+    if TEST && TESTFILTERGEN
         figure;
         plot(f, H, '-o');
         
@@ -24,5 +23,8 @@ function h = rrcosfilter(beta, fm)
         figure;
         plot(t,h);
         grid on;
+        
+        figure;
+        plot(f, fftshift(fft(h)));
     end
 end
