@@ -8,14 +8,14 @@ modulated=mapping(message.',Nbps,'qam'); % send message to modulator function
 %need to know the number of bit per symbol !!!!
 
 %% upsampling
-sps = 40; % multiplier factor must match with sps
+sps = 4; % multiplier factor must match with sps
 
 upsampledMes = upsample(modulated,sps);
 
 %% Nyquist filer (rrc) 
 
 % sps = 4; % must match with multiplier
-span = 160; % will have to be 16*sps+1
+span = 16; % will have to be 16*sps+1
 RRCTaps = (span*sps)+1;
 %G = rcosdesign(beta,span,sps,'sqrt'); % square root nyquist pulse filter , truncated to span symbols, each symbol period has sps samples
 
@@ -33,7 +33,7 @@ h_rrc = ifftshift(ifft(G));
 % figure
 % plot(t,h_rrc)
 
-mesToSend=conv(h_rrc,upsampledMes); % len = len(G)+len(upsampledMes)-1
+mesToSend=conv(G,upsampledMes); % len = len(G)+len(upsampledMes)-1
 
 end
 

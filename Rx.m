@@ -3,8 +3,8 @@ function mes = Rx( ReceivedMes, beta, Fm, Fs )
 
 %% Nyquist filer (rrc) 
 
-sps = 40; % must match with multiplier
-span = 160; % will have to be 16*sps+1
+sps = 4; % must match with multiplier
+span = 16; % will have to be 16*sps+1
 % G = rcosdesign(beta,span,sps,'sqrt'); % TODO !
 RRCTaps = (span*sps)+1;
 [H_rc, f, fmax] = rcosfilter(beta,RRCTaps, 1/Fm, Fs);
