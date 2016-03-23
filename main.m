@@ -1,7 +1,7 @@
 global NBITS BPS BETA FS FM EB_N0 NTAPS;
 global TEST TESTFILTER TESTTX TESTMAPPING TESTDEMAPPING;
 TEST = 1;
-TESTFILTER = 1;
+TESTFILTER = 0;
 TESTTX = 0;
 TESTDEMAPPING = 0;
 TESTMAPPING = 0;
@@ -9,7 +9,7 @@ TESTMAPPING = 0;
 BPS = 2; %Bits per symbol
 NBITS = 100; %SE
 BETA = 0.3; %Rolloff factor of the RRC filter
-NTAPS = 101; %of the RRC filter
+NTAPS = 1421; %of the RRC filter
 FS = 10e6; %Sample frequency
 FM = 1e6; %symbol frequency, also the cutoff frequency for the rrc filters
 EB_N0 = 10; %ratio of energy_bit/noise energy in dB
@@ -28,6 +28,6 @@ signal = Tx(sent);
 received = Rx(signal);
 
 if TEST
-    %figure;
-    %stem(sent - received);
+    figure;
+    stem(sent - received);
 end
