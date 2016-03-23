@@ -1,24 +1,33 @@
-%Main  project. 
-% Call all other function 
-numberOfBits=100;
+global NBITS BPS BETA FS FM EB_N0 NTAPS;
+global TEST TESTFILTER TESTTX TESTMAPPING TESTDEMAPPING;
+TEST = 1;
+TESTFILTER = 1;
+TESTTX = 0;
+TESTDEMAPPING = 0;
+TESTMAPPING = 0;
 
-beta = 0.25;
-Fs = 2e4; % Sample frequency
-Fm = 5e2; % symbol frequency
-Eb_N0 = 10; % ratio of energy_bit/noise energy in dB
+BPS = 2; %Bits per symbol
+NBITS = 100; %SE
+BETA = 0.3; %Rolloff factor of the RRC filter
+NTAPS = 101; %of the RRC filter
+FS = 10e6; %Sample frequency
+FM = 1e6; %symbol frequency, also the cutoff frequency for the rrc filters
+EB_N0 = 10; %ratio of energy_bit/noise energy in dB
 
-message=bitGenerator(numberOfBits); %creation of message of bits
+close all;
+
+sent = bitGenerator(); %creation of message of bits
 
 %send to sender
-mesToSend=Tx(message, beta, Fm, Fs);
+signal = Tx(sent);
 
 %add noise
-
-%receivedMes=noise(mesToSend, Fs, Fm, Eb_N0); % message read at the receiver
+%receivedMes = noise(mesToSend); % message read at the receiver
 
 %receiver
-messageBack = Rx(mesToSend, beta, Fm, Fs);
-figure
-stem(message)
-hold on
-stem(messageBack,'r')
+received = Rx(signal);
+
+if TEST
+    %figure;
+    %stem(sent - received);
+end

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 function mesToSend = Tx( mess, beta, Fm, Fs )
 %UNTITLED3 Summary of this function goes here
    
@@ -35,11 +36,36 @@ h_rrc = ifftshift(ifft(G));
 
 mesToSend=conv(G,upsampledMes); % len = len(G)+len(upsampledMes)-1
 
+=======
+function signal = Tx(message)
+    global BETA FM FS BPS;
+    global TEST TESTTX TESTMAPPING;
+
+    %input vector must be column vector
+    modulated = mapping(message, BPS, 'qam');
+    if TEST && TESTMAPPING
+        figure;
+        scatter(real(modulated), imag(modulated));
+        plot(linspace(-FM/2,FM/2,length(modulated)),abs(fftshift(fft(modulated))));
+    end
+    
+    %% upsampling
+    upsampled = upsample(modulated,FS/FM-1);
+    
+    %% Nyquist filer (rrc)     
+    h_rrc = rrcosfilter(BETA, FM);
+    signal=conv(h_rrc,upsampled); % len = len(G)+len(upsampledMes)-1
+    if TEST && TESTTX
+        figure;
+        plot(linspace(-FS/2, FS/2, length(upsampled)), 20*log10(abs(fftshift(fft(upsampled)))), '-o', ...
+        linspace(-FS/2, FS/2, length(signal)), 20*log10(abs(fftshift(fft(signal)))), '-o');
+    end
+>>>>>>> a5d587d9ad53779d53ea2e66a7e2e8ba301519a9
 end
 
 % taps of the filter : time extension & frequency resolution
 % RRCTaps = length(H(f))
-% fmax=Fs/2
+% Fax=Fs/2
 % f=linspace(-fmax,fmax,RRCTaps)
 % may need to normalize H to get impulse =1 at t=0
 % Delta_T = 1/2fmax
