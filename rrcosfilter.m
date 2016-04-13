@@ -13,16 +13,18 @@ function h = rrcosfilter(beta, fm)
        end
     end
     
-    h = ifftshift(ifft(sqrt(H*fm), 'symmetric'));
-    h(ceil(NTAPS/2))
+    h = ifftshift(ifft(sqrt(fftshift(fft(ifft(H, 'symmetric')*fm))), 'symmetric')); % normalization + ifft
+    % h(ceil(NTAPS/2))
 
     if TEST && TESTFILTER
         figure;
         plot(f, H, '-o');
+        title('Frequency response of the filter')
         
-        t = (-(NTAPS-1)/2:(NTAPS-1)/2)*(1/fmax);
+        t = (-(NTAPS-1)/2:(NTAPS-1)/2)*(1/2*fmax);
         figure;
         plot(t,h);
+        title('Time response of the filter')
         grid on;
     end
 end

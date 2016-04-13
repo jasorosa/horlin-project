@@ -1,11 +1,11 @@
 
 function signal = Tx(message)
-    global BETA FM FS BPS;
+    global BETA FM FS BPS NTAPS;
     global TEST TESTTX TESTMAPPING;
 
     %input vector must be column vector
     modulated = mapping(message, BPS, 'qam');
-    size(modulated)
+    % size(modulated)
     if TEST && TESTMAPPING
         figure;
         scatter(real(modulated), imag(modulated));
@@ -14,9 +14,20 @@ function signal = Tx(message)
     
     %% upsampling
     upsampled = upsample(modulated,FS/FM-1);
-    size(upsampled)
+    % size(upsampled)
     %% Nyquist filer (rrc)     
     h_rrc = rrcosfilter(BETA, FM);
+    
+%     h_matlab = rcosdesign(BETA,6.4,10,'sqrt');
+%     fmax = FS*(NTAPS-1)/(2*NTAPS);
+%     t = (-(NTAPS-1)/2:(NTAPS-1)/2)*(1/2*fmax);
+%     f = linspace(-fmax, fmax, NTAPS);
+%     plot(t, h_matlab)
+%     title('matlab t')
+%     figure
+%     plot(f, fftshift(fft(h_matlab)))
+%     title('matlab f')
+    
     signal=conv(h_rrc,upsampled); % len = len(G)+len(upsampledMes)-1
     if TEST && TESTTX
         figure;
