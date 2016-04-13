@@ -1,10 +1,11 @@
 function h = rrcosfilter(beta, fm)
-    global FS NTAPS TEST TESTFILTERGEN;
-    H = zeros(NTAPS,1);
-    fmax = FS*(NTAPS-1)/(2*NTAPS);
-    f = linspace(-fmax, fmax, NTAPS);
+    global FS NTAPSHALF TEST TESTFILTERGEN;
+    nTaps = 2*NTAPSHALF+1;
+    H = zeros(nTaps,1);
+    fmax = FS*(nTaps-1)/(2*nTaps);
+    f = linspace(-fmax, fmax, nTaps);
 
-    for i=1:NTAPS
+    for i=1:nTaps
         if abs(f(i)) <= (1-beta)*fm/2
             H(i) = 1/fm;
         elseif abs(f(i)) <= (1+beta)*fm/2
@@ -14,17 +15,21 @@ function h = rrcosfilter(beta, fm)
     end
     
     h = ifftshift(ifft(sqrt(H*fm), 'symmetric'));
-
+    h = sqrt(fm)*rcosfir(beta, NTAPSHALF, FS/fm, 1/fm, 'sqrt');
+    l = length(h)
+    
     if TEST && TESTFILTERGEN
         figure;
         plot(f, H, '-o');
         
-        t = (-(NTAPS-1)/2:(NTAPS-1)/2)*(1/fmax);
+        t = (-(nTaps-1)/2:(nTaps-1)/2)*(1/fmax);
         figure;
-        plot(t,h);
+        plot(h);
+        title('Impulse response of the root raised cosine filter');
         grid on;
         
         figure;
-        plot(f, fftshift(fft(h)));
+        plot(fftshift(abs(fft(h))));
+        title('Frequency response of the root raised cosine filter');
     end
 end

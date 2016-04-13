@@ -1,11 +1,12 @@
 function message = Rx(signal)
-    global BETA FM FS BPS NTAPS;
+    global BETA FM FS BPS NTAPSHALF;
     global TEST TESTDEMAPPING;
 
+    nTaps = NTAPSHALF*2+1;
     %% Nyquist filer (rrc) 
     h_rrc = rrcosfilter(BETA,FM);
     oversampled = conv(signal, h_rrc); % len = len(G)+len(upsampledMes)-1
-    oversampled = oversampled(NTAPS:end-NTAPS+1); % to get the right length after convolution we discard the RRCtaps-1 first samples
+    oversampled = oversampled(nTaps:end-nTaps+1); % to get the right length after convolution we discard the RRCtaps-1 first samples
     size(oversampled)
     %% downsampling
     modulated = oversampled(1:ceil(FS/FM)-1:end);
