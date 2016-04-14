@@ -1,28 +1,20 @@
 function signal = Tx(message)
     global BETA FM FS BPS;
-    global TEST TESTFILTERING TESTMAPPING;
+    global TEST TESTMAPPING;
 
     %input vector must be column vector
     modulated = mapping(message, BPS, 'qam');
-    size(modulated)
     if TEST && TESTMAPPING
         figure;
         scatter(real(modulated), imag(modulated));
-        plot(linspace(-FM/2,FM/2,length(modulated)),abs(fftshift(fft(modulated))));
     end
     
     %% upsampling
-    upsampled = upsample(modulated,FS/FM-1);
-    size(upsampled)
+    upsampled = upsample(modulated,FS/FM);
+    
     %% Nyquist filer (rrc)     
     h_rrc = rrcosfilter(BETA, FM);
-    signal=conv(h_rrc,upsampled); % len = len(G)+len(upsampledMes)-1
-    if TEST && TESTFILTERING
-        figure;
-        plot(linspace(-FS/2, FS/2, length(upsampled)), 20*log10(abs(fftshift(fft(upsampled)))), '-o', ...
-        linspace(-FS/2, FS/2, length(signal)), 20*log10(abs(fftshift(fft(signal)))), '-o');
-        legend('before', 'after');
-    end
+    signal=conv(h_rrc, upsampled); % len = len(h-rrc)+len(upsampledMes)-1
 end
 
 % taps of the filter : time extension & frequency resolution

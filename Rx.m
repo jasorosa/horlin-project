@@ -5,7 +5,7 @@ function message = Rx(signal)
     nTaps = NTAPSHALF*2+1;
     %% Nyquist filer (rrc) 
     h_rrc = rrcosfilter(BETA,FM);
-    oversampled = conv(signal, h_rrc); % len = len(G)+len(upsampledMes)-1
+    oversampled = conv(signal, h_rrc); % len = len(h_rrc)+len(upsampledMes)-1
     oversampled = oversampled(nTaps:end-nTaps+1); % to get the right length after convolution we discard the RRCtaps-1 first samples
     size(oversampled)
     %% downsampling
@@ -17,8 +17,6 @@ function message = Rx(signal)
     end
 
     %input vector must be column vector
-    message = demapping(modulated,BPS,'qam'); % send message to modulator function
-    size(message)
-    %need to know the number of bit per symbol !!!!
+    message = demapping(modulated,BPS,'qam'); % send message to demodulator function
 
 end
