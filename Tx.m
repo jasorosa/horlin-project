@@ -10,11 +10,11 @@ function signal = Tx(message)
     end
     
     %% upsampling
-    upsampled = upsample(modulated,FS/FM-1);
+    upsampled = upsample(modulated,FS/FM);
     
     %% Nyquist filer (rrc)     
     h_rrc = rrcosfilter(BETA, FM);
-    signal=conv(h_rrc, upsampled); % len = len(h-rrc)+len(upsampledMes)-1
+    signal=conv(h_rrc, upsampled); % len = len(h_rrc)+len(upsampledMes)-1
 end
 
 % taps of the filter : time extension & frequency resolution

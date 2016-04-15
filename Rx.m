@@ -1,16 +1,13 @@
 function message = Rx(signal)
-    global BETA FM FS BPS NTAPSHALF;
+    global BETA FM FS BPS NTAPS;
     global TEST TESTDEMAPPING;
 
-    nTaps = NTAPSHALF*2+1;
     %% Nyquist filer (rrc) 
     h_rrc = rrcosfilter(BETA,FM);
     oversampled = conv(signal, h_rrc); % len = len(h_rrc)+len(upsampledMes)-1
-    oversampled = oversampled(nTaps*FS/FM:end-(nTaps*FS/FM)+1); % to get the right length after convolution we discard the RRCtaps-1 first samples
-    size(oversampled)
+    oversampled = oversampled(NTAPS*FS/FM+1:end-(NTAPS*FS/FM)); % to get the right length after convolution we discard the RRCtaps-1 first samples
     %% downsampling
-    modulated = oversampled(1:ceil(FS/FM)-1:end);
-    size(modulated)
+    modulated = oversampled(1:ceil(FS/FM):end);
     if TEST && TESTDEMAPPING
         figure;
         scatter(real(modulated), imag(modulated)); % show the constellation
