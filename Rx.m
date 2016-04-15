@@ -6,7 +6,7 @@ function message = Rx(signal)
     %% Nyquist filer (rrc) 
     h_rrc = rrcosfilter(BETA,FM);
     oversampled = conv(signal, h_rrc); % len = len(h_rrc)+len(upsampledMes)-1
-    oversampled = oversampled(nTaps:end-nTaps+1); % to get the right length after convolution we discard the RRCtaps-1 first samples
+    oversampled = oversampled(nTaps*FS/FM:end-(nTaps*FS/FM)+1); % to get the right length after convolution we discard the RRCtaps-1 first samples
     size(oversampled)
     %% downsampling
     modulated = oversampled(1:ceil(FS/FM)-1:end);

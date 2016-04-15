@@ -10,7 +10,7 @@ function signal = Tx(message)
     end
     
     %% upsampling
-    upsampled = upsample(modulated,FS/FM);
+    upsampled = upsample(modulated,FS/FM-1);
     
     %% Nyquist filer (rrc)     
     h_rrc = rrcosfilter(BETA, FM);

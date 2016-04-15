@@ -6,7 +6,6 @@ function h = rrcosfilter(beta, fm)
     if TEST && TESTFILTERGEN
         nTaps = 2*NTAPSHALF+1;
         fmax = FS*(nTaps-1)/(2*nTaps);
-        figure;
         
         t = (-(nTaps-1)*FS/(2*fm):(nTaps-1)*FS/(2*fm))*(1/fmax);
         figure;
