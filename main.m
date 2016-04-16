@@ -9,7 +9,8 @@ TESTDEMAPPING = 1;
 TESTMAPPING = 0;
 
 BPS = 2; %Bits per symbol
-NBITS = 10000; %SE
+NSYM = 10000;
+NBITS = BPS*NSYM; %SE
 BETA = 0.3; %Rolloff factor of the RRC filter
 NTAPS = 20; %of the RRC filter
 FS = 10e6; %Sample frequency
@@ -18,9 +19,10 @@ E_B_OVER_N_0 = 10; %ratio of energy_bit/noise energy in dB (typ. 10)
 
 close all;
 
-sent = bitGenerator(); %creation of message of bits
+sent = bitGenerator(NBITS);
+h_rrc = rrcosfilter(BETA,FM);
 
-received = Rx(awgn(Tx(sent), E_B_OVER_N_0));
+received = Rx(awgn(Tx(sent, h_rrc), E_B_OVER_N_0), h_rrc);
 
 if TEST && TESTRX
     figure;

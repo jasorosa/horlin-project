@@ -1,5 +1,4 @@
-function [message] = bitGenerator()
-    global NBITS;
-    message = randi([0 1], NBITS, 1);
+function [message] = bitGenerator(length)
+    message = randi([0 1], length, 1);
 end
 
