@@ -1,5 +1,7 @@
 function h = rrcosfilter(beta, fm)
-    global FS NTAPS TEST TESTFILTERGEN;
+    global FS NTAPS FM;
+    global ASSIGNMENT TEST;
+    global TESTFILTERGEN ANYQUIST;
 
     nsamps = NTAPS * FS/fm + 1;
     H = zeros(nsamps,1);
@@ -14,7 +16,7 @@ function h = rrcosfilter(beta, fm)
             H(i) = tm/2*(1+cos(pi*(tm/beta)*(abs(f(i))-(1-beta)*fm/2)));
        end
     end
-    
+
     h = ifftshift(ifft(fftshift(sqrt(H)), 'symmetric'));
     h = h./max(h);
     h = [h(2:end);h(1)];%FUCK YOU MATLAB
@@ -23,11 +25,28 @@ function h = rrcosfilter(beta, fm)
         figure;
         plot(f, H, '-o');
         title('Frequency response of the filter')
-        
+
         t = (-(nsamps-1)/2:(nsamps-1)/2)*(1/2*fmax);
         figure;
         plot(t,h);
         title('Time response of the filter')
         grid on;
     end
+
+    if ASSIGNMENT && ANYQUIST
+        f = figure; hold all; grid on;
+        set(findall(f,'-property','FontSize'),'FontSize',17);
+        set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
+        autoConv = conv(h,h);
+        isi = smpFromCenter(autoConv,FS/FM);
+        t = (-(length(autoConv)-1)/2:(length(autoConv)-1)/2) * (1/2*fmax);
+        tisi = smpFromCenter(t',FS/FM);
+        plot(t, autoConv, 'LineWidth', 1);
+        plot(tisi,isi,'o', 'MarkerSize', 7);
+        title('ISI of the raised root nyquist filter');
+        xlabel('time');
+        ylabel('Value');
+        legend('RRC filter convoluted with itself', 'Convolution sampled every T_m');
+    end
+
 end

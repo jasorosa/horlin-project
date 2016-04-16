@@ -11,11 +11,11 @@ function [bit_rx] = demapping(symb_rx,Nbps,modulation)
 Nsymb = size(symb_rx,1); % Number of symbols
 
 switch modulation,
-    
+
     case 'pam'
-        
+
         % Symbol to integer
-        sigma = sqrt(sum(([0:2^Nbps-1]-(2^Nbps-1)/2).^2)/2^Nbps); 
+        sigma = sqrt(sum(([0:2^Nbps-1]-(2^Nbps-1)/2).^2)/2^Nbps);
         int_rx = sigma * symb_rx + (2^Nbps-1)/2;
 
         % Integer detection
@@ -37,11 +37,11 @@ switch modulation,
     case 'qam'
 
         % REAL PART
-        NbpsI = Nbps/2; 
+        NbpsI = Nbps/2;
         symb_rxI = real(symb_rx);
 
         % Symbol to integer
-        sigmaI = sqrt(sum(([0:2^NbpsI-1]-(2^NbpsI-1)/2).^2)/2^NbpsI); 
+        sigmaI = sqrt(sum(([0:2^NbpsI-1]-(2^NbpsI-1)/2).^2)/2^NbpsI);
         int_rxI = sigmaI * sqrt(2) * symb_rxI + (2^NbpsI-1)/2;
 
         % Integer detection
@@ -58,13 +58,13 @@ switch modulation,
             bit_rx2I(:,ii) = xor( mapp_rxI(:,ii-1) , mapp_rxI(:,ii) );
         end
 
-         
+
         % IMAGINARY PART
-        NbpsQ = Nbps/2; 
+        NbpsQ = Nbps/2;
         symb_rxQ = imag(symb_rx);
 
         % Symbol to integer
-        sigmaQ = sqrt(sum(([0:2^NbpsQ-1]-(2^NbpsQ-1)/2).^2)/2^NbpsQ); 
+        sigmaQ = sqrt(sum(([0:2^NbpsQ-1]-(2^NbpsQ-1)/2).^2)/2^NbpsQ);
         int_rxQ = sigmaQ * sqrt(2) * symb_rxQ + (2^NbpsQ-1)/2;
 
         % Integer detection
@@ -80,9 +80,9 @@ switch modulation,
         for ii = 2:NbpsQ,
             bit_rx2Q(:,ii) = xor( mapp_rxQ(:,ii-1) , mapp_rxQ(:,ii) );
         end
-      
-         
+
+
         % BIT CONCATENATION
         bit_rx = reshape([bit_rx2I,bit_rx2Q]',Nsymb*Nbps,1);
-        
+
 end

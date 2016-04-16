@@ -48,7 +48,7 @@ hLeg = legend('show');
 % display and the computation of the legend box boundaries. Position works
 % like this: [(bottom left corner horizontal position), (bottom left corner
 % vertical position), (width), (height)]. If the width and/or height are
-% too small for proper display, then Matlab adjusts the parameters => 
+% too small for proper display, then Matlab adjusts the parameters =>
 % interesting to set 0.01 to have the tighest possible legend box.
 set(hLeg, 'fontsize', 12, 'interpreter', 'latex',...
     'Position', [0.76,0.2,0.01,0.01]);

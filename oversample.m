@@ -5,4 +5,3 @@ function oversampled = oversample(original, f1, f2)
         oversampled(ratio*i+1:(i+1)*ratio) = ones(ratio, 1)*original(i);
     end
 end
-        

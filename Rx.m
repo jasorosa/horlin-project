@@ -2,7 +2,7 @@ function message = Rx(signal, h_rrc)
     global FM FS BPS NTAPS;
     global TEST TESTDEMAPPING;
 
-    %% Nyquist filer (rrc) 
+    %% Nyquist filer (rrc)
     oversampled = conv(signal, h_rrc); % len = len(h_rrc)+len(upsampledMes)-1
     oversampled = oversampled(NTAPS*FS/FM+1:end-(NTAPS*FS/FM)); % to get the right length after convolution we discard the RRCtaps-1 first samples
     %% downsampling
