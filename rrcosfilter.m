@@ -1,5 +1,5 @@
 function h = rrcosfilter(beta, fm)
-    global FS NTAPS FM;
+    global FS NTAPS;
     global ASSIGNMENT TEST;
     global TESTFILTERGEN ANYQUIST;
 
@@ -38,9 +38,9 @@ function h = rrcosfilter(beta, fm)
         set(findall(f,'-property','FontSize'),'FontSize',17);
         set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
         autoConv = conv(h,h);
-        isi = smpFromCenter(autoConv,FS/FM);
+        isi = smpFromCenter(autoConv,FS/fm);
         t = (-(length(autoConv)-1)/2:(length(autoConv)-1)/2) * (1/2*fmax);
-        tisi = smpFromCenter(t',FS/FM);
+        tisi = smpFromCenter(t',FS/fm);
         plot(t, autoConv, 'LineWidth', 1);
         plot(tisi,isi,'o', 'MarkerSize', 7);
         title('ISI of the raised root nyquist filter');
