@@ -26,7 +26,7 @@ function h = rrcosfilter(beta, fm)
         plot(f, H, '-o');
         title('Frequency response of the filter')
 
-        t = (-(nsamps-1)/2:(nsamps-1)/2)*(1/2*fmax);
+        t = (-(nsamps-1)/2:(nsamps-1)/2)*(1/(2*fmax));
         figure;
         plot(t,h);
         title('Time response of the filter')
@@ -34,19 +34,21 @@ function h = rrcosfilter(beta, fm)
     end
 
     if ANYQUIST
-        f = figure; hold all; grid on;
+        f = figure; hold on; grid on;
         set(findall(f,'-property','FontSize'),'FontSize',17);
         set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
+
         autoConv = conv(h,h);
         isi = smpFromCenter(autoConv,FS/fm);
-        t = (-(length(autoConv)-1)/2:(length(autoConv)-1)/2) * (1/2*fmax);
-        tisi = smpFromCenter(t',FS/fm);
-        plot(t, autoConv, 'LineWidth', 1);
+        tautoconv = (-(length(autoConv)-1)/2:(length(autoConv)-1)/2) * (1/(2*fmax));
+        tisi = smpFromCenter(tautoconv',FS/fm);
+        plot(tautoconv, autoConv, 'LineWidth', 1);
         plot(tisi,isi,'o', 'MarkerSize', 7);
-        title('ISI of the raised root nyquist filter');
-        xlabel('time');
-        ylabel('Value');
-        legend('RRC filter convoluted with itself', 'Convolution sampled every T_m');
+        title('Cancellation of the ISI of an RRC filter');
+        xlabel('time [s]');
+        ylabel('Value [arbitrary]');
+        box on;
+        legend('RRC filter convoluted with itself', sprintf('Convolution result sampled at the symbol frequency '));
     end
 
 end
