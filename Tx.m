@@ -1,10 +1,10 @@
-function signal = Tx(message, h_rrc)
-    global FM FS BPS;
-    global TEST ASSIGNMENT;
-    global TESTMAPPING ANYQUIST;
+function signal = Tx(message, h_rrc, bps)
+    global FM FS;
+    global TEST TESTMAPPING;
+    global ANYQUIST;
 
     %input vector must be column vector
-    modulated = mapping(message, BPS, 'qam');
+    modulated = mapping(message, bps, 'qam');
     if TEST && TESTMAPPING
         figure;
         scatter(real(modulated), imag(modulated));
@@ -16,7 +16,7 @@ function signal = Tx(message, h_rrc)
     %% Nyquist filer (rrc)
     signal=conv(h_rrc, upsampled); % len = len(h_rrc)+len(upsampledMes)-1
 
-    if ASSIGNMENT && ANYQUIST
+    if ANYQUIST
         f = figure; hold all; grid on;
         set(findall(f,'-property','FontSize'),'FontSize',17);
         set(findall(f,'-property','FontName'),'FontName', 'Helvetica');

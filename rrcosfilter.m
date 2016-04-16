@@ -1,7 +1,7 @@
 function h = rrcosfilter(beta, fm)
     global FS NTAPS;
-    global ASSIGNMENT TEST;
-    global TESTFILTERGEN ANYQUIST;
+    global TEST TESTFILTERGEN;
+    global ANYQUIST;
 
     nsamps = NTAPS * FS/fm + 1;
     H = zeros(nsamps,1);
@@ -33,7 +33,7 @@ function h = rrcosfilter(beta, fm)
         grid on;
     end
 
-    if ASSIGNMENT && ANYQUIST
+    if ANYQUIST
         f = figure; hold all; grid on;
         set(findall(f,'-property','FontSize'),'FontSize',17);
         set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
