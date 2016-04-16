@@ -15,11 +15,9 @@ function h = rrcosfilter(beta, fm)
        end
     end
     
-    %h = ifftshift(ifft(sqrt(fftshift(fft(ifft(H, 'symmetric')*fm))), 'symmetric')); % normalization + ifft
     h = ifftshift(ifft(fftshift(sqrt(H)), 'symmetric'));
     h = h./max(h);
-    h = [h(2:end);h(1)];%FUCK MATLAB
-    % h(ceil(NTAPS/2))
+    h = [h(2:end);h(1)];%FUCK YOU MATLAB
 
     if TEST && TESTFILTERGEN
         figure;
