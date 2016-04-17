@@ -1,7 +1,7 @@
 function h = rrcosfilter(beta, fm)
     global FS NTAPS;
     global TEST TESTFILTERGEN;
-    global ANYQUIST;
+    global ANYQUIST ACFOISI;
 
     nsamps = NTAPS * FS/fm + 1;
     H = zeros(nsamps,1);
@@ -51,4 +51,21 @@ function h = rrcosfilter(beta, fm)
         legend('RRC filter convoluted with itself', sprintf('Convolution result sampled at the symbol frequency '));
     end
 
+    if ACFOISI
+        f = figure; hold on; grid on;
+        set(findall(f,'-property','FontSize'),'FontSize',17);
+        set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
+
+        autoConv = angle(conv(h,cfo(h,10e-6*2e9,0)));
+        isi = smpFromCenter(autoConv,FS/fm);
+        tautoconv = (-(length(autoConv)-1)/2:(length(autoConv)-1)/2) * (1/(2*fmax));
+        tisi = smpFromCenter(tautoconv',FS/fm);
+        plot(tautoconv, autoConv, 'LineWidth', 1);
+        plot(tisi,isi,'o', 'MarkerSize', 7);
+        title('Cancellation of the ISI of an RRC filter');
+        xlabel('time [s]');
+        ylabel('Value [arbitrary]');
+        box on;
+        legend('RRC filter convoluted with itself', sprintf('Convolution result sampled at the symbol frequency '));
+    end
 end
