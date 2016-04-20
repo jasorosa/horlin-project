@@ -30,7 +30,7 @@ E_B_OVER_N_0 = 10; %ratio of energy_bit/noise energy in dB (typ. 10)
 sent = bitGenerator(NBITS);
 h_rrc = rrcosfilter(BETA,FM);
 
-received = Rx(awgn(Tx(sent, cfo(h_rrc, FC*10e-6, 0), BPS), E_B_OVER_N_0), h_rrc, BPS);
+received = Rx(cfo(awgn(Tx(sent, h_rrc, BPS), E_B_OVER_N_0), FC*10e-6, 0), h_rrc, BPS, FC*10e-6);
 
 if TEST && TESTRX
     figure;
@@ -60,17 +60,17 @@ if ABER
     set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
 end
 
-if ACFOISI && 0
+if ACFOISI
     f = figure;
 
-    df = [0 .2 .6 .10] .* (1e-6*FC);
+    df = [0 2 6 10 40] .* (1e-6*FC);
     ebn0 = 0:.5:25;
     bers = zeros(length(df),length(ebn0));
     sent = bitGenerator(NBITS);
     for i = 1:length(df)
         for j = 1:length(ebn0)
-            signal = awgn(Tx(sent, cfo(h_rrc, df(i), 0), BPS), ebn0(j));
-            received = Rx(signal,h_rrc, BPS);
+            signal = cfo(awgn(Tx(sent, h_rrc, BPS), ebn0(j)), df(i), 0);
+            received = Rx(signal,h_rrc, BPS, df(i));
             bers(i,j) = sum(abs(received-sent))/NBITS;
         end
         semilogy(ebn0,bers(i,:),'-o','DisplayName',sprintf('CFO = %d ppm', df(i)/FC * 1e6), 'LineWidth',2);hold all;grid on;
