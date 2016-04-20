@@ -5,7 +5,7 @@ global TEST TESTFILTERGEN TESTTX TESTMAPPING TESTDEMAPPING...
     TESTRX;
 global ANYQUIST ABER ACFOISI;
 
-TEST = 1;
+TEST = 0;
 TESTFILTERGEN = 0;
 TESTTX = 0;
 TESTRX = 1;
@@ -17,8 +17,8 @@ ANYQUIST = ASSIGNMENT && 0;
 ABER = ASSIGNMENT && 0;
 ACFOISI = ASSIGNMENT && 1;
 
-BPS = 2; %Bits per symbol
-NSYM = 10000;
+BPS = 4; %Bits per symbol
+NSYM = 100000;
 NBITS = BPS*NSYM; %SE
 BETA = 0.3; %Rolloff factor of the RRC filter
 NTAPS = 30; %of the RRC filter
@@ -47,7 +47,7 @@ if ABER
         NBITS = bps(i)*NSYM;
         sent = bitGenerator(NBITS);
         for j = 1:length(ebn0)
-            received = Rx(awgn(Tx(sent, h_rrc, bps(i)), ebn0(j)), h_rrc, bps(i));
+            received = Rx(awgn(Tx(sent, h_rrc, bps(i)), ebn0(j)), h_rrc, bps(i), df(i));
             bers(i,j) = sum(abs(received-sent))/NBITS;
         end
         semilogy(ebn0,bers(i,:),'-o','DisplayName',sprintf('%d-QAM', 2^bps(i)), 'LineWidth',2);hold all;grid on;

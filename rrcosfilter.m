@@ -51,12 +51,12 @@ function h = rrcosfilter(beta, fm)
         legend('RRC filter convoluted with itself', sprintf('Convolution result sampled at the symbol frequency '));
     end
 
-    if ACFOISI
+    if ACFOISI && TESTFILTERGEN
         f = figure; hold on; grid on;
         set(findall(f,'-property','FontSize'),'FontSize',17);
         set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
 
-        autoConv = angle(conv(h,cfo(h,10e-6*2e9,0)));
+        autoConv = conv(h,cfo(h,2e9*10e-6,0));
         isi = smpFromCenter(autoConv,FS/fm);
         tautoconv = (-(length(autoConv)-1)/2:(length(autoConv)-1)/2) * (1/(2*fmax));
         tisi = smpFromCenter(tautoconv',FS/fm);
