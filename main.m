@@ -1,38 +1,44 @@
 clear; close all;
 
 global NBITS NSYM BETA FS FM E_B_OVER_N_0 NTAPS;
-global TEST TESTFILTERGEN TESTTX TESTMAPPING TESTDEMAPPING...
-    TESTRX;
-global ANYQUIST ABER ACFOISI;
+global TFILTERGEN TTX TMAPPING TDEMAPPING...
+    TRX;
+global ANYQUIST ABER ACFOISI ARAWCFO ASMPSHIFT;
 
-TEST = 0;
-TESTFILTERGEN = 0;
-TESTTX = 0;
-TESTRX = 1;
-TESTDEMAPPING = 1;
-TESTMAPPING = 0;
+TEST = 1;
+TFILTERGEN = TEST && 1;
+TTX = TEST && 1;
+TRX = TEST && 1;
+TDEMAPPING = TEST && 1;
+TMAPPING = TEST && 1;
 
 ASSIGNMENT = 1;
 ANYQUIST = ASSIGNMENT && 0;
 ABER = ASSIGNMENT && 1;
 ACFOISI = ASSIGNMENT && 0;
+ARAWCFO = ASSIGNMENT && 0;
+ASMPSHIFT = ASSIGNMENT && 1;
 
 BPS = 4; %Bits per symbol
-NSYM = 1e7;
+FC = 2e9; %for CFO
+
+NSYM = 1e4;
 NBITS = BPS*NSYM; %SE
 BETA = 0.3; %Rolloff factor of the RRC filter
 NTAPS = 100; %of the RRC filter
 FS = 10e6;
 FM = 1e6; %symbol frequency, also defines the cutoff frequency for the rrc filters
-FC = 2e9; %for CFO
+
 E_B_OVER_N_0 = 10; %ratio of energy_bit/noise energy in dB (typ. 10)
 
 sent = bitGenerator(NBITS);
 h_rrc = rrcosfilter(BETA,FM);
 
-received = Rx(cfo(awgn(Tx(sent, h_rrc, BPS), E_B_OVER_N_0), FC*10e-6, 0), h_rrc, BPS, FC*10e-6);
+if TEST
+    received = Rx(cfo(awgn(Tx(sent, h_rrc, BPS), E_B_OVER_N_0), FC*10e-6, 0), h_rrc, BPS, FC*10e-6);
+end
 
-if TEST && TESTRX
+if TRX
     figure;
     stem( abs(sent - received));
 end

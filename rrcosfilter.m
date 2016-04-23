@@ -1,6 +1,6 @@
 function h = rrcosfilter(beta, fm)
     global FS NTAPS;
-    global TEST TESTFILTERGEN;
+    global TFILTERGEN;
     global ANYQUIST ACFOISI;
 
     nsamps = NTAPS * FS/fm + 1;
@@ -21,7 +21,7 @@ function h = rrcosfilter(beta, fm)
     h = h./max(h);
     h = [h(2:end);h(1)];%FUCK YOU MATLAB
 
-    if TEST && TESTFILTERGEN
+    if TFILTERGEN
         figure;
         plot(f, H, '-o');
         title('Frequency response of the filter')

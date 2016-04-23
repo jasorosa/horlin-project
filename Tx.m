@@ -1,11 +1,11 @@
 function signal = Tx(message, h_rrc, bps)
     global FM FS;
-    global TEST TESTMAPPING;
+    global TMAPPING;
     global ANYQUIST;
 
     %input vector must be column vector
     modulated = mapping(message, bps, 'qam');
-    if TEST && TESTMAPPING
+    if TMAPPING
         figure;
         scatter(real(modulated), imag(modulated));
     end

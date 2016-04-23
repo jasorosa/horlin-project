@@ -1,6 +1,6 @@
 function message = Rx(signal, h_rrc, bps, varargin)
     global FM FS NTAPS NSYM;
-    global TEST TESTDEMAPPING;
+    global TDEMAPPING;
     MANUALCFOCORR = 0;
 
     if length(varargin) == 1
@@ -20,7 +20,7 @@ function message = Rx(signal, h_rrc, bps, varargin)
         
     modulated = oversampled(1:ceil(FS/FM):end);
     modulated = modulated/sqrt(sum(abs(modulated).^2)/NSYM);
-    if TEST && TESTDEMAPPING
+    if TDEMAPPING
         figure;
         scatter(real(modulated), imag(modulated)); % show the constellation
     end
