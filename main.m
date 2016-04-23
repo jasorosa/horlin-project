@@ -5,7 +5,7 @@ global TFILTERGEN TTX TMAPPING TDEMAPPING...
     TRX;
 global ANYQUIST ABER ACFOISI ARAWCFO ASMPSHIFT;
 
-TEST = 1;
+TEST = 0;
 TFILTERGEN = TEST && 1;
 TTX = TEST && 1;
 TRX = TEST && 1;
@@ -14,12 +14,12 @@ TMAPPING = TEST && 1;
 
 ASSIGNMENT = 1;
 ANYQUIST = ASSIGNMENT && 0;
-ABER = ASSIGNMENT && 1;
+ABER = ASSIGNMENT && 0;
 ACFOISI = ASSIGNMENT && 0;
 ARAWCFO = ASSIGNMENT && 0;
 ASMPSHIFT = ASSIGNMENT && 1;
 
-BPS = 4; %Bits per symbol
+BPS = 2; %Bits per symbol
 FC = 2e9; %for CFO
 
 NSYM = 1e4;
@@ -69,19 +69,45 @@ end
 if ACFOISI
     f = figure;
 
-    df = [0 2 6 10 40] .* (1e-6*FC);
-    ebn0 = 0:.5:25;
-    bers = zeros(length(df),length(ebn0));
+    dsmpEps = [0 2 10 25 40] .* (1e-6*FC);
+    ebn0 = -10:.5:25;
+    bers = zeros(length(dsmpEps),length(ebn0));
     sent = bitGenerator(NBITS);
-    for i = 1:length(df)
+    for i = 1:length(dsmpEps)
         for j = 1:length(ebn0)
-            signal = cfo(awgn(Tx(sent, h_rrc, BPS), ebn0(j)), df(i), 0);
-            received = Rx(signal,h_rrc, BPS, df(i));
+            signal = cfo(awgn(Tx(sent, h_rrc, BPS), ebn0(j)), dsmpEps(i), 0);
+            received = Rx(signal,h_rrc, BPS, dsmpEps(i));
             bers(i,j) = sum(abs(received-sent))/NBITS;
         end
-        semilogy(ebn0,bers(i,:),'-o','DisplayName',sprintf('CFO = %d ppm', df(i)/FC * 1e6), 'LineWidth',2);hold all;grid on;
+        semilogy(ebn0,bers(i,:),'-o','DisplayName',sprintf('CFO = %d ppm', dsmpEps(i)/FC * 1e6), 'LineWidth',2);hold all;grid on;
     end
-    title('Impact of CFO on BER');
+    title('Impact of perfectly compensated (ISI only) CFO on BER');
+    xlabel('SNR per bit [dB]');
+    ylabel('BER');
+    legend('-DynamicLegend');
+    set(findall(f,'-property','FontSize'),'FontSize',17);
+    set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
+end
+
+if ARAWCFO
+
+end
+
+if ASMPSHIFT
+    f = figure;
+    dsmpEps = linspace(0,0.5,7);
+    ebn0 = -10:.5:25;
+    bers = zeros(length(dsmpEps),length(ebn0));
+    sent = bitGenerator(NBITS);
+    for i = 1:length(dsmpEps)
+        for j = 1:length(ebn0)
+            signal = awgn(Tx(sent, h_rrc, BPS), ebn0(j));
+            received = Rx(signal,h_rrc, BPS, 0, dsmpEps(i));
+            bers(i,j) = sum(abs(received-sent))/NBITS;
+        end
+        semilogy(ebn0,bers(i,:),'-o','DisplayName',sprintf('Epsilon = %g', dsmpEps(i)), 'LineWidth',2);hold all;grid on;
+    end
+    title('Impact of sample time shift on BER');
     xlabel('SNR per bit [dB]');
     ylabel('BER');
     legend('-DynamicLegend');
