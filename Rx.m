@@ -1,5 +1,5 @@
 function message = Rx(signal, h_rrc, bps, varargin)
-    global FM FS NTAPS NSYM;
+    global FM FS NTAPS NSYM K;
     global TDEMAPPING;
     MANUALCFOCORR = 0;
     dsmpEps = 0;
@@ -22,7 +22,8 @@ function message = Rx(signal, h_rrc, bps, varargin)
         cfo = exp((-1j*2*pi*df).* (t+t(NTAPS*ceil(FS/(2*FM)))));
         oversampled = oversampled .* cfo';
     end
-    modulated = oversampled(1+floor(dsmpEps*FS/FM):ceil(FS/FM):end);
+    sampled = oversampled(1+floor(dsmpEps*FS/FM):ceil(FS/(2*FM)):end);
+    modulated = gardner(sampled, K);
     modulated = modulated/sqrt(sum(abs(modulated).^2)/NSYM);
     if TDEMAPPING
         figure;
