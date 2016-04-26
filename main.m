@@ -1,32 +1,33 @@
 clear; close all;
 
-global NBITS NSYM BETA FS FM E_B_OVER_N_0 NTAPS;
+global NBITS NSYM BETA FS FM E_B_OVER_N_0 NTAPS K FC;
 global TFILTERGEN TMAPPING TDEMAPPING...
     TRX TGARDNER;
-global ANYQUIST ABER ACFOISI ARAWCFO ASMPSHIFT K;
+global ANYQUIST ABER ACFOISI ARAWCFO ASMPSHIFT APILOT;
 
 TEST = 1;
 TFILTERGEN = TEST && 0;
-TRX = TEST && 1;
-TDEMAPPING = TEST && 1;
+TRX = TEST && 0;
+TDEMAPPING = TEST && 0;
 TMAPPING = TEST && 0;
-TGARDNER = TEST && 1;
+TGARDNER = TEST && 0;
 
-ASSIGNMENT = 0;
+ASSIGNMENT = 1;
 ANYQUIST = ASSIGNMENT && 0;
 ABER = ASSIGNMENT && 0;
-ACFOISI = ASSIGNMENT && 1;
+ACFOISI = ASSIGNMENT && 0;
 ARAWCFO = ASSIGNMENT && 0;
-ASMPSHIFT = ASSIGNMENT && 1;
+ASMPSHIFT = ASSIGNMENT && 0;
+APILOT = ASSIGNMENT && 1;
 
 FC = 2e9; %for CFO
 
-NSYM = 1e4;
+NSYM = 1e3;
 BETA = 0.3; %Rolloff factor of the RRC filter
 NTAPS = 100; %of the RRC filter
-FS = 10e6;
+FS = 100e6;
 FM = 1e6; %symbol frequency, also defines the cutoff frequency for the rrc filters
-K = .1;
+K = 0;
 
 E_B_OVER_N_0 = 10; %ratio of energy_bit/noise energy in dB (typ. 10)
 
@@ -37,9 +38,11 @@ if TEST
     BPS = 2; %Bits per symbol
     NBITS = BPS*NSYM; %SE
 
+    pilotSymbol = mapping(sent(1:40), BPS, 'qam');
+    
     out = Tx(sent, h_rrc, BPS);
-    signal = cfo(awgn(out, E_B_OVER_N_0), 0, 0);
-    received = Rx(signal, h_rrc, BPS, 0, .1);
+    signal = cfo(awgn(out, E_B_OVER_N_0), 20e-6*FC, 0);
+    received = Rx(signal, h_rrc, BPS, pilotSymbol, 0, 0);
 end
 
 if TRX
