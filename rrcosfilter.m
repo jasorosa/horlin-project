@@ -17,9 +17,8 @@ function h = rrcosfilter(beta, fm)
        end
     end
 
-    h = ifftshift(ifft(fftshift(sqrt(H)), 'symmetric'));
+    h = fftshift(ifft(ifftshift(sqrt(H)), 'symmetric'));
     h = h./max(h);
-    h = [h(2:end);h(1)];%FUCK YOU MATLAB
 
     if TFILTERGEN
         figure;
