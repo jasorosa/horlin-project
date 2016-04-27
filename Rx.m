@@ -39,7 +39,7 @@ function message = Rx(signal, h_rrc, bps, pilotSymbol, varargin)
             end
             D(k,:) = D(k,:)/(N-k);
         end
-        plot(sum(abs(D)));
+        %plot(sum(abs(D)));
         [~,est_n] = max(sum(abs(D)));
         
         est_cfo = 0;
