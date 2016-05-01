@@ -1,4 +1,4 @@
-close all;
+close all; clear all;
 
 global NBITS NSYM BETA FS FM E_B_OVER_N_0 NTAPS K FC;
 global TFILTERGEN TMAPPING TDEMAPPING...
@@ -18,6 +18,7 @@ NTAPS = 100; %of the RRC filter
 FS = 100e6;
 FM = 1e6; %symbol frequency, also defines the cutoff frequency for the rrc filters
 K = 0;
+N = 40;
 
 E_B_OVER_N_0 = 10; %ratio of energy_bit/noise energy in dB (typ. 10)
 
@@ -26,11 +27,21 @@ NBITS = BPS*NSYM; %SE
 
 sent = bitGenerator(NBITS);
 h_rrc = rrcosfilter(BETA,FM);
+pilotSymbol = mapping(sent(1:N), BPS, 'qam');
 
-pilotSymbol = mapping(sent(1:40), BPS, 'qam');
+modulated = mapping(message, bps, 'qam');
+if TMAPPING
+   figure;
+   scatter(real(modulated), imag(modulated));
+end
 
-out = Tx(sent, h_rrc, BPS);
+upsampled = upsample(modulated,FS/FM);
+
+out = conv(h_rrc, upsampled); % len = len(h_rrc)+len(upsampledMes)-1
+
 signal = cfo(awgn(out, E_B_OVER_N_0), 20e-6*FC, 0);
-received = Rx(signal, h_rrc, BPS, pilotSymbol, 0, 0);
+
+oversampled = conv(signal, h_rrc); % len = len(h_rrc)+len(upsampledMes)-1
+oversampled = oversampled(NTAPS*FS/FM+1:end-(NTAPS*FS/FM)); % to get the right length after convolution we discard the RRCtaps-1 first samples
 
 
