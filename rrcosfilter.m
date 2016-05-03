@@ -55,7 +55,7 @@ function h = rrcosfilter(beta, fm, ntaps)
         set(findall(f,'-property','FontSize'),'FontSize',17);
         set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
 
-        autoConv = conv(h,cfo(h,2e9*10e-6,0));
+        autoConv = conv(h,cfo(h,2e9*12e-6,0));
         isi = smpFromCenter(autoConv,FS/fm);
         tautoconv = (-(length(autoConv)-1)/2:(length(autoConv)-1)/2) * (1/(2*fmax));
         tisi = smpFromCenter(tautoconv',FS/fm);
