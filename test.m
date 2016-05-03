@@ -51,9 +51,27 @@ upsampled = upsample(modulated,FS/FM);
 
 out = conv(h_rrc, upsampled); % len = len(h_rrc)+len(upsampledMes)-1
 
-signal = cfo(awgn(out, E_B_OVER_N_0), 20e-6*FC, 0);
+signal = cfo(awgn(out, E_B_OVER_N_0), DF*FC, 0);
 
 oversampled = conv(signal, h_rrc); % len = len(h_rrc)+len(upsampledMes)-1
 oversampled = oversampled(NTAPS*FS/FM+1:end-(NTAPS*FS/FM)); % to get the right length after convolution we discard the RRCtaps-1 first samples
 
+gardnersampled = oversampled(1+DSMP:FS/FSGARDNER:end);
 
+modulated = gardner(gardnersampled, K);
+
+%[nHat cfoHat] = frameAcq(pilotSymbol, modulated, N, KWIN);
+
+modulated = modulated/sqrt(sum(abs(modulated).^2)/NSYM);
+if TDEMAPPING
+    figure;
+    scatter(real(modulated), imag(modulated)); % show the constellation
+end
+
+%input vector must be column vector
+received = demapping(modulated,BPS,'qam'); % send message to demodulator function
+
+if TRX
+    figure;
+    stem( abs(sent - received));
+end
