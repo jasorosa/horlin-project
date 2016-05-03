@@ -1,9 +1,9 @@
-function h = rrcosfilter(beta, fm)
-    global FS NTAPS;
+function h = rrcosfilter(beta, fm, ntaps)
+    global FS;
     global TFILTERGEN;
     global ANYQUIST ACFOISI;
 
-    nsamps = NTAPS * FS/fm + 1;
+    nsamps = ntaps * FS/fm + 1;
     H = zeros(nsamps,1);
     fmax = FS*(nsamps-1)/(2*nsamps);
     f = linspace(-fmax, fmax, nsamps);

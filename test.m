@@ -1,35 +1,47 @@
 close all; clear all;
 
-global NBITS NSYM BETA FS FM E_B_OVER_N_0 NTAPS K FC;
+global NBITS FS FM FSGARDNER;
 global TFILTERGEN TMAPPING TDEMAPPING...
     TRX TGARDNER;
 
-TFILTERGEN = 1;
+TFILTERGEN = 0;
 TRX = 0;
 TDEMAPPING = 0;
 TMAPPING = 0;
-TGARDNER = 0;
+TGARDNER = 1;
 
-FC = 2e9; %for CFO
-
+%general
 NSYM = 1e3;
-BETA = 0.3; %Rolloff factor of the RRC filter
-NTAPS = 100; %of the RRC filter
 FS = 100e6;
 FM = 1e6; %symbol frequency, also defines the cutoff frequency for the rrc filters
-K = 0;
-N = 40;
-
-E_B_OVER_N_0 = 10; %ratio of energy_bit/noise energy in dB (typ. 10)
-
 BPS = 2; %Bits per symbol
 NBITS = BPS*NSYM; %SE
 
+%noise
+E_B_OVER_N_0 = 50; %ratio of energy_bit/noise energy in dB (typ. 10)
+
+%rrc filter
+BETA = 0.3; %Rolloff factor of the RRC filter
+NTAPS = 20; %of the RRC filter
+
+%cfo
+FC = 2e9; %for CFO
+DF = 0;
+
+%Gardner
+FSGARDNER = 8*FM;
+K = 10;
+DSMP = 50;
+
+%frame acquisition
+N = 40;
+KWIN = 12;
+
 sent = bitGenerator(NBITS);
-h_rrc = rrcosfilter(BETA,FM);
+h_rrc = rrcosfilter(BETA, FM, NTAPS);
 pilotSymbol = mapping(sent(1:N), BPS, 'qam');
 
-modulated = mapping(message, bps, 'qam');
+modulated = mapping(sent, BPS, 'qam');
 if TMAPPING
    figure;
    scatter(real(modulated), imag(modulated));
