@@ -1,6 +1,6 @@
 close all; clear all;
 
-global NBITS FS FM FSGARDNER;
+global FS FM FSGARDNER;
 global TFILTERGEN TMAPPING TDEMAPPING...
     TRX TGARDNER;
 
@@ -51,7 +51,7 @@ upsampled = upsample(modulated,FS/FM);
 
 out = conv(h_rrc, upsampled); % len = len(h_rrc)+len(upsampledMes)-1
 
-signal = cfo(awgn(out, E_B_OVER_N_0), DF*FC, 0);
+signal = cfo(awgn(out, E_B_OVER_N_0, NBITS), DF*FC, 0);
 
 oversampled = conv(signal, h_rrc); % len = len(h_rrc)+len(upsampledMes)-1
 oversampled = oversampled(NTAPS*FS/FM+1:end-(NTAPS*FS/FM)); % to get the right length after convolution we discard the RRCtaps-1 first samples
