@@ -1,4 +1,4 @@
-clear; close all;
+clear all; close all;
 
 global NBITS NSYM BETA FS FM E_B_OVER_N_0 NTAPS K FC;
 global TFILTERGEN TMAPPING TDEMAPPING...

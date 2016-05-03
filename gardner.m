@@ -1,6 +1,6 @@
 function corrected = gardner(sampled, K)
     global TGARDNER FSGARDNER FM;
-    osratio = FSGARDNER/FM
+    osratio = FSGARDNER/FM;
     epsilon = zeros(ceil(size(sampled)./osratio));
     corrected = zeros(length(epsilon), 1);
     corrected(1) = sampled(1);
