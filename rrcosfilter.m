@@ -50,7 +50,7 @@ function h = rrcosfilter(beta, fm, ntaps)
         legend('RRC filter convoluted with itself', sprintf('Convolution result sampled at the symbol frequency '));
     end
 
-    if ACFOISI && TFILTERGEN
+    if ACFOISI
         f = figure; hold on; grid on;
         set(findall(f,'-property','FontSize'),'FontSize',17);
         set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
