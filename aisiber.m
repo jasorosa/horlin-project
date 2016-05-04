@@ -23,22 +23,20 @@ df = [0 2 10 25 40].*(1e-6*FC);
 ebn0 = -10:.5:25;
 bers = zeros(length(df),length(ebn0));
 for i = 1:length(df)
-    sent = bitGenerator(NBITS);
     for j = 1:length(ebn0)
-        i
-        j
         modulated = mapping(sent, BPS, 'qam');
         
         upsampled = upsample(modulated,FS/FM);
-        out = conv(h, upsampled); % len = len(h_rrc)+len(upsampledMes)-1
+        out = conv(h, upsampled);
 
         signal = awgn(out, ebn0(j), NBITS);
         signal = cfo(signal, df(i), 0);
         
-        oversampled = conv(signal, h); % len = len(h_rrc)+len(upsampledMes)-1
-        t = (0:length(oversampled)-1) ./ FS;
-        osc = exp((-1j*2*pi*df(i)).* (t+t(NTAPS*ceil(FS/(2*FM)))));
-        oversampled = oversampled .* osc';
+        oversampled = conv(signal, h);
+
+        %Manual perfect cfo correction after filtering
+        oversampled = cfo(oversampled, -df(i), NTAPS*2*pi*df(i)/(2*FM));
+        
         oversampled = oversampled(NTAPS*FS/FM+1:end-(NTAPS*FS/FM)); % to get the right length after convolution we discard the RRCtaps-1 first samples
         modulated = oversampled(1:FS/FM:end);
 
