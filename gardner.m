@@ -12,7 +12,7 @@ function corrected = gardner(sampled, K)
     end
     if TGARDNER
         figure;
-        plot(epsilon);
+        plot(epsilon./(FSGARDNER/FM));
         title('epsilon')
     end
 end
