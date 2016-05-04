@@ -7,7 +7,6 @@ AGARDNER = 1;
 
 %general
 NSYM = 1e3;
-FS = 100e6;
 FM = 1e6; %symbol frequency, also defines the cutoff frequency for the rrc filters
 BPS = 2; %Bits per symbol
 NBITS = BPS*NSYM; %SE
@@ -24,27 +23,53 @@ FC = 2e9; %for CFO
 DF = 0;
 
 %Gardner
-FSGARDNER = 4*FM;
-K = 10;
+FSGARDNER = 8*FM;
+FS = 10*FSGARDNER;
 DSMP = 40;
+NEXP = 10;
+K = [5 10]*1e-6;
 
-sent = bitGenerator(NBITS);
 h_rrc = rrcosfilter(BETA, FM, NTAPS);
 
-modulated = mapping(sent, BPS, 'qam');
+f = figure; hold all;
+for i = 1:length(K)
+    for j = 1:NEXP
+        sent = bitGenerator(NBITS);
 
-upsampled = upsample(modulated,FS/FM);
+        modulated = mapping(sent, BPS, 'qam');
 
-out = conv(h_rrc, upsampled);
+        upsampled = upsample(modulated,FS/FM);
+        out = conv(h_rrc, upsampled);
 
-signal = cfo(awgn(out, E_B_OVER_N_0, NBITS), DF*FC, 0);
+        signal = cfo(awgn(out, E_B_OVER_N_0, NBITS), DF*FC, 0);
 
-oversampled = conv(signal, h_rrc);
-oversampled = oversampled(NTAPS*FS/FM+1:end-(NTAPS*FS/FM));
+        oversampled = conv(signal, h_rrc);
+        oversampled = oversampled(NTAPS*FS/FM+1:end-(NTAPS*FS/FM));
 
-gardnersampled = oversampled(1+DSMP:FS/FSGARDNER:end);
+        gardnersampled = oversampled(1+DSMP:FS/FSGARDNER:end);
 
-modulated = gardner(gardnersampled, K);
+        [~, epsilon] = gardner(gardnersampled, K(i));
+        if j == 1 && i == 1
+            means = zeros(length(epsilon), length(K));
+            stdv = zeros(length(epsilon), length(K));
+        end
+        means(:,i) = means(:,i) + epsilon;
+        stdv(:, i) = stdv(:, i) + epsilon.^2;
+    end
+    means(:,i) = means(:,i)./NEXP;
+    stdv(:,i) = sqrt(stdv(:,i)./NEXP - means(:,i) .^2);
+    plot(means(:,i), 'DisplayName', sprintf('K = %g', K(i)))
+    plot(means(:,i) + stdv(:,i));
+    plot(means(:,i) - stdv(:,i));
+end
+title('Convergence of the Gardner algorithm')
+xlabel('Symbol');
+ylabel('Epsilon estimation');
+legend('-DynamicLegend');
+set(findall(f,'-property','FontSize'),'FontSize',17);
+set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
+
+
 
 modulated = modulated/sqrt(sum(abs(modulated).^2)/NSYM);
 
