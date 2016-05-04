@@ -29,9 +29,9 @@ FC = 2e9; %for CFO
 DF = 0;
 
 %Gardner
-FSGARDNER = 8*FM;
+FSGARDNER = 4*FM;
 K = 10;
-DSMP = 30;
+DSMP = 40;
 
 %frame acquisition
 N = 40;
