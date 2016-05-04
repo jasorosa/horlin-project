@@ -16,6 +16,7 @@ NTAPS = 20;
 FC = 2e9;
 
 h = rrcosfilter(BETA, FM, NTAPS);
+sent = bitGenerator(NBITS);
 
 f = figure;
 
