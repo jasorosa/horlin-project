@@ -9,7 +9,7 @@ function [corrected, epsilon] = gardner(sampled, K)
         interpolation = interp1(1:osratio+1,sampled(osratio*(n-1)+1:osratio*n+1), [osratio/2+1 osratio+1] - epsilon(n), 'pchip');
         middle = interpolation(1);
         corrected(n+1) = interpolation(2);
-        epsilon(n+1) = epsilon(n) + 2*K/FM*real(middle*(conj(corrected(n+1)) - conj(corrected(n))));
+        epsilon(n+1) = epsilon(n) + 2*K*real(middle*(conj(corrected(n+1)) - conj(corrected(n))));
     end
     epsilon = epsilon ./ (FSGARDNER/FM);
     if TGARDNER

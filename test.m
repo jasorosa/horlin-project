@@ -12,7 +12,7 @@ TGARDNER = 1;
 
 %general
 NSYM = 1e3;
-FS = 100e6;
+FS = 16e6;
 FM = 1e6; %symbol frequency, also defines the cutoff frequency for the rrc filters
 BPS = 2; %Bits per symbol
 NBITS = BPS*NSYM; %SE
@@ -30,8 +30,8 @@ DF = 0;
 
 %Gardner
 FSGARDNER = 4*FM;
-K = 10;
-DSMP = 40;
+K = 100e-6;
+DSMP = 4;
 
 %frame acquisition
 N = 40;
