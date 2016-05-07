@@ -4,7 +4,7 @@ global FS;
 
 FS = 10e6;
 
-NSYM = 1e3;
+NSYM = 1e6;
 
 BETA = 0.3;
 FM = 1e6;
@@ -21,6 +21,7 @@ for i = 1:length(bps)
     nbits = bps(i)*NSYM;
     sent = bitGenerator(nbits);
     for j = 1:length(ebn0)
+        fprintf('bps: %d/%d, noise: %d/%d\n', i, length(bps), j, length(bers));
         modulated = mapping(sent, bps(i), 'qam');
         
         upsampled = upsample(modulated,FS/FM);
@@ -39,8 +40,9 @@ for i = 1:length(bps)
     semilogy(ebn0,bers(i,:),'-o','DisplayName',sprintf('%d-QAM', 2^bps(i)), 'LineWidth',2);hold all;grid on;
 end
 title('BER curves for different QAMs');
-xlabel('SNR per bit [dB]');
+xlabel('E_b/N_0[dB]');
 ylabel('BER');
 legend('-DynamicLegend');
 set(findall(f,'-property','FontSize'),'FontSize',17);
 set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
+ylim([10/NSYM inf]);
