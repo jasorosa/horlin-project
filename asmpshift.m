@@ -2,13 +2,13 @@ clear all; close all;
 
 global FS;
 
-FS = 20e6;
+FS = 32e6;
 
 BETA = 0.3;
 FM = 1e6;
 NTAPS = 20;
 
-NSYM = 1e3;
+NSYM = 1e6;
 
 BPS = 4;
 NBITS = BPS*NSYM;
@@ -17,12 +17,13 @@ h = rrcosfilter(BETA, FM, NTAPS);
 
 f = figure;
 
-smpshift = [0 1 2 5 10];
-ebn0 = -10:.5:25;
+smpshift = [0 1 2 3 4 8 16];
+ebn0 = -10:1:25;
 bers = zeros(length(smpshift),length(ebn0));
 sent = bitGenerator(NBITS);
 for i = 1:length(smpshift)
     for j = 1:length(ebn0)
+        fprintf('eps: %d/%d, noise: %d/%d\n', i, length(smpshift), j, length(bers));
         modulated = mapping(sent, BPS, 'qam');
         
         upsampled = upsample(modulated,FS/FM);
@@ -42,8 +43,9 @@ for i = 1:length(smpshift)
     semilogy(ebn0,bers(i,:),'-o','DisplayName',sprintf('Epsilon = %g', smpshift(i)/(FS/FM)), 'LineWidth',2);hold all;grid on;
 end
 title('Impact of sample time shift on BER');
-xlabel('SNR per bit [dB]');
+xlabel('E_b/N_0[dB]');
 ylabel('BER');
 legend('-DynamicLegend');
 set(findall(f,'-property','FontSize'),'FontSize',17);
 set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
+ylim([10/NSYM inf]);
