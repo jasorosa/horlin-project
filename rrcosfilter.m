@@ -18,7 +18,8 @@ function h = rrcosfilter(beta, fm, ntaps)
     end
 
     h = fftshift(ifft(ifftshift(sqrt(H)), 'symmetric'));
-    h = h./max(h);
+    norm = max(conv(h,h));
+    h = h./sqrt(norm);
 
     if TFILTERGEN
         figure;
@@ -42,7 +43,11 @@ function h = rrcosfilter(beta, fm, ntaps)
         tautoconv = (-(length(autoConv)-1)/2:(length(autoConv)-1)/2) * (1/(2*fmax));
         tisi = smpFromCenter(tautoconv',FS/fm);
         plot(tautoconv, autoConv, 'LineWidth', 1);
-        plot(tisi,isi,'o', 'MarkerSize', 7);
+        plot(tisi,isi,'or', 'MarkerSize', 7);
+        offset = 0.1*(-1).^(1:length(isi))';
+        size(offset)
+        size(isi)
+        text(tisi,isi+offset,num2str(isi), 'HorizontalAlignment', 'center', 'rotation',30, 'fontsize', 13, 'FontWeight', 'bold');
         title('Cancellation of the ISI of an RRC filter');
         xlabel('time [s]');
         ylabel('Value [arbitrary]');
