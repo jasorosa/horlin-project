@@ -1,9 +1,6 @@
 close all; clear all;
 
 global FS FM FSGARDNER;
-global AGARDNER;
-
-AGARDNER = 1;
 
 %general
 NSYM = 1e3;
