@@ -20,11 +20,12 @@ sent = bitGenerator(NBITS);
 
 f = figure;
 
-df = [0 2 10 25 40].*(1e-6*FC);
+df = [0 25 50 75 100].*(1e-6*FC);
 ebn0 = -10:.5:25;
 bers = zeros(length(df),length(ebn0));
 for i = 1:length(df)
     for j = 1:length(ebn0)
+        fprintf('df: %d/%d, noise: %d/%d\n', i, length(df), j, length(bers));
         modulated = mapping(sent, BPS, 'qam');
         
         upsampled = upsample(modulated,FS/FM);
@@ -47,9 +48,10 @@ for i = 1:length(df)
     end
     semilogy(ebn0,bers(i,:),'-o','DisplayName',sprintf('CFO = %d ppm', df(i)/FC * 1e6), 'LineWidth',2);hold all;grid on;
 end
-title('BER curves for different QAMs');
-xlabel('SNR per bit [dB]');
+title(sprintf('Impact of perfectly compensated (ISI only) CFO on BER\n%d-QAM', 2^BPS));
+xlabel('E_b/N_0[dB]');
 ylabel('BER');
 legend('-DynamicLegend');
 set(findall(f,'-property','FontSize'),'FontSize',17);
 set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
+ylim([10/NSYM inf]);

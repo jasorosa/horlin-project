@@ -45,10 +45,8 @@ function h = rrcosfilter(beta, fm, ntaps)
         plot(tautoconv, autoConv, 'LineWidth', 1);
         plot(tisi,isi,'or', 'MarkerSize', 7);
         offset = 0.1*(-1).^(1:length(isi))';
-        size(offset)
-        size(isi)
         text(tisi,isi+offset,num2str(isi), 'HorizontalAlignment', 'center', 'rotation',30, 'fontsize', 13, 'FontWeight', 'bold');
-        title('Cancellation of the ISI of an RRC filter');
+        title('Cancellation of the ISI of an RC filter');
         xlabel('time [s]');
         ylabel('Value [arbitrary]');
         box on;
@@ -59,17 +57,19 @@ function h = rrcosfilter(beta, fm, ntaps)
         f = figure; hold on; grid on;
         set(findall(f,'-property','FontSize'),'FontSize',17);
         set(findall(f,'-property','FontName'),'FontName', 'Helvetica');
-
-        autoConv = conv(h,cfo(h,2e9*12e-6,0));
+        cfoppm = 10;
+        autoConv = conv(h,cfo(h,2e9*cfoppm*1e-6,0));
         isi = smpFromCenter(autoConv,FS/fm);
         tautoconv = (-(length(autoConv)-1)/2:(length(autoConv)-1)/2) * (1/(2*fmax));
         tisi = smpFromCenter(tautoconv',FS/fm);
-        plot(tautoconv, autoConv, 'LineWidth', 1);
-        plot(tisi,isi,'o', 'MarkerSize', 7);
-        title('Cancellation of the ISI of an RRC filter');
+        plot(tautoconv, real(autoConv), 'LineWidth', 1);
+        plot(tisi,real(isi),'or', 'MarkerSize', 7);
+        offset = max(real(isi))/12*(-1).^(0:length(isi)-1)';
+        text(tisi,real(isi+offset),num2str(real(isi)), 'HorizontalAlignment', 'center', 'rotation',30, 'fontsize', 13, 'FontWeight', 'bold');
+        title(sprintf('Impact of the CFO on the ISI of the pair of RRC filter\nCFO=%dppm',cfoppm));
         xlabel('time [s]');
         ylabel('Value [arbitrary]');
         box on;
-        legend('RRC filter convoluted with itself', sprintf('Convolution result sampled at the symbol frequency '));
+        legend('Impulse response of the RRC-CFO-RRC system', sprintf('Response sampled at the symbol frequency '));
     end
 end
