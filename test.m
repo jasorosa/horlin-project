@@ -37,7 +37,16 @@ DSMP = 4;
 N = 40;
 KWIN = 12;
 
-sent = bitGenerator(NBITS);
+%LDPC
+H0 = [1 1 0 1 1 0 0 1 0 0; ...
+      0 1 1 0 1 1 1 0 0 0; ...
+      0 0 0 1 0 0 0 1 1 1; ...
+      1 1 0 0 0 1 1 0 1 0; ...
+      0 0 1 0 0 1 0 1 0 1];
+
+infobits = bitGenerator(NBITS);
+[sent, H] = encoder(H0, infobits');
+sent = sent';
 h_rrc = rrcosfilter(BETA, FM, NTAPS);
 pilotSymbol = mapping(sent(1:N), BPS, 'qam');
 
@@ -70,8 +79,9 @@ end
 
 %input vector must be column vector
 received = demapping(modulated,BPS,'qam'); % send message to demodulator function
+rcvinfobits = decoder(received,H);
 
 if TRX
     figure;
-    stem( abs(sent - received));
+    stem( abs(infobits - rcvinfobits));
 end
