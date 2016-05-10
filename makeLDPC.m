@@ -1,4 +1,4 @@
-function H = makeLdpc(M, N, method, noCycle, onePerCol)
+function H = makeLDPC(M, N, method, noCycle, onePerCol)
 % Create R = 1/2 low density parity check matrix
 %
 %  M        : Number of row
