@@ -1,8 +1,7 @@
 close all; clear all;
 
 global FS FM FSGARDNER;
-global TFILTERGEN TMAPPING TDEMAPPING...
-    TRX TGARDNER;
+global TFILTERGEN TMAPPING TDEMAPPING TRX TGARDNER;
 
 TFILTERGEN = 0;
 TRX = 1;
@@ -38,17 +37,19 @@ N = 40;
 KWIN = 12;
 
 %LDPC
-BLKSIZE = 128;
-H0 = makeLDPC(BLKSIZE, 256,0,1,3);
+IBLKSIZE = 128;
+RATIO = 2;
+CBLKSIZE = RATIO*IBLKSIZE;
+MAXITER = 101;
+H0 = makeLDPC(IBLKSIZE, CBLKSIZE, 0, 1, 3);
 
 infobits = bitGenerator(NBITS);
-[sent, H] = makeParityChk(infobits(1:128), H0, 0);
-sent = [sent;infobits(1:128)];
-for blkstart = BLKSIZE+1:BLKSIZE:NBITS
-    [checkbits, ~] = makeParityChk(infobits(blkstart:blkstart+BLKSIZE-1), H0, 0);
-    sent = [sent;checkbits;infobits(blkstart:blkstart+BLKSIZE-1)];
+[sent, H] = makeParityChk(infobits(1:IBLKSIZE), H0, 0);
+sent = [sent;infobits(1:IBLKSIZE)];
+for blkstart = IBLKSIZE+1:IBLKSIZE:NBITS
+    [checkbits, ~] = makeParityChk(infobits(blkstart:blkstart+IBLKSIZE-1), H0, 0);
+    sent = [sent;checkbits;infobits(blkstart:blkstart+IBLKSIZE-1)];
 end
-size(sent)
 
 h_rrc = rrcosfilter(BETA, FM, NTAPS);
 pilotSymbol = mapping(sent(1:N), BPS, 'qam');
@@ -86,5 +87,6 @@ rcvinfobits = decoder(received,H, MAXITER);
 
 if TRX
     figure;
-    stem( abs(infobits - rcvinfobits));
+    fprintf('uncoded errors: %d, coded errors: %d\n', sum(abs(sent-received)), sum(abs(infobits - rcvinfobits)))
+    stem(abs(infobits - rcvinfobits));    
 end
