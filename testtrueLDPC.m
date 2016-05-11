@@ -82,7 +82,7 @@ end
 
 %input vector must be column vector
 received = demapping(modulated,BPS,'qam'); % send message to demodulator function
-rcvinfobits = decoder(received,H);
+rcvinfobits = decoder(received,H, MAXITER);
 
 if TRX
     figure;

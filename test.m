@@ -43,6 +43,7 @@ H0 = [1 1 0 1 1 0 0 1 0 0; ...
       0 0 0 1 0 0 0 1 1 1; ...
       1 1 0 0 0 1 1 0 1 0; ...
       0 0 1 0 0 1 0 1 0 1];
+MAXITER = 10;
 
 infobits = bitGenerator(NBITS);
 [sent, H] = encoder(H0, infobits');
@@ -79,7 +80,7 @@ end
 
 %input vector must be column vector
 received = demapping(modulated,BPS,'qam'); % send message to demodulator function
-rcvinfobits = decoder(received,H);
+rcvinfobits = decoder(received,H, MAXITER);
 
 if TRX
     figure;
