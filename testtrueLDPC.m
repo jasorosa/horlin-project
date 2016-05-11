@@ -75,7 +75,6 @@ modulated = gardner(gardnersampled, K);
 
 %[nHat cfoHat] = frameAcq(pilotSymbol, modulated, N, KWIN);
 
-modulated = modulated/sqrt(sum(abs(modulated).^2)/NSYM);
 if TDEMAPPING
     figure;
     scatter(real(modulated), imag(modulated)); % show the constellation
