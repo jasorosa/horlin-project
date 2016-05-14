@@ -10,9 +10,9 @@ TMAPPING = 0;
 TGARDNER = 1;
 
 %general
-NSYM = 2^20;
+NSYM = 2^18;
 FM = 1e6; %symbol frequency, also defines the cutoff frequency for the rrc filters
-FS = 10*FM;
+FS = 4*FM;
 BPS = 4; %Bits per symbol
 NBITS = BPS*NSYM; %SE
 
@@ -27,7 +27,7 @@ NTAPS = 20; %of the RRC filter
 IBLKSIZE = 128;
 RATIO = 2;
 CBLKSIZE = RATIO*IBLKSIZE;
-MAXITER = 4:4:20;
+MAXITER = 1:5;
 H0 = makeLDPC(IBLKSIZE, CBLKSIZE, 0, 1, 3);
 
 infobits = bitGenerator(NBITS);
