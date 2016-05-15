@@ -38,15 +38,15 @@ function infobits = sbldemapper(received, H, maxiter)
         end
         hard = lc < 0;
         iter = 1;
-        while any(mod(H*hard,2)) && iter<maxiter
+        while any(mod(H*hard,2)) && iter<=maxiter
             for j = 1:m
                 lr(j,:) = makelrj(lq(:,j), chkindexes(j,:));
             end
             for i = 1:n
-                lq(i,:) = updatechknodes(obs(i),lr(:,i),varindexes(i,:));
+                lq(i,:) = updatechknodes(lc(i),lr(:,i),varindexes(i,:));
             end
             hard = (lc + sum(lr,1)') < 0;
-            iter = iter + 1
+            iter = iter + 1;
         end
         infobits(:,blki) = hard(n-m+1:end);       
     end

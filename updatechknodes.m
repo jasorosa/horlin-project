@@ -1,4 +1,4 @@
-function lqi = updatechknodes(obsi,lri,varidxi)
+function lqi = updatechknodes(lci,lri,varidxi)
     if varidxi(end) > 0
         realength = length(varidxi);
     else
@@ -11,6 +11,6 @@ function lqi = updatechknodes(obsi,lri,varidxi)
         lrisum = lrisum + lri(idx);
     end
     for idx = varidxi(1:realength)
-        lqi(idx) = obsi + lrisum - lri(idx);
+        lqi(idx) = lci + lrisum - lri(idx);
     end
 end
