@@ -16,7 +16,7 @@ BPS = 1; %Bits per symbol
 NBITS = BPS*NSYM; %SE
 
 %noise
-E_B_OVER_N_0 = 30; %ratio of energy_bit/noise energy in dB (typ. 10)
+E_B_OVER_N_0 = 6; %ratio of energy_bit/noise energy in dB (typ. 10)
 
 %rrc filter
 BETA = 0.3; %Rolloff factor of the RRC filter
@@ -63,9 +63,11 @@ if TDEMAPPING
 end
 
 %input vector must be column vector
+received = demapping(modulated, BPS, 'pam');
 rcvinfobits = sbldemapper(modulated, H, MAXITER);
 
 if TRX
     figure;
-    stem(abs(infobits - rcvinfobits));    
+    stem(abs(infobits - rcvinfobits));
+    fprintf('uncoded errors: %d, coded errors: %d\n', sum(abs(sent-received)), sum(abs(infobits - rcvinfobits)))
 end
