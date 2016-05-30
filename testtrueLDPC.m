@@ -5,7 +5,7 @@ global TFILTERGEN TMAPPING TDEMAPPING TRX TGARDNER;
 
 TFILTERGEN = 0;
 TRX = 1;
-TDEMAPPING = 0;
+TDEMAPPING = 1;
 TMAPPING = 0;
 TGARDNER = 1;
 
@@ -17,7 +17,7 @@ BPS = 2; %Bits per symbol
 NBITS = BPS*NSYM; %SE
 
 %noise
-E_B_OVER_N_0 = 7; %ratio of energy_bit/noise energy in dB (typ. 10)
+E_B_OVER_N_0 = 6; %ratio of energy_bit/noise energy in dB (typ. 10)
 
 %rrc filter
 BETA = 0.3; %Rolloff factor of the RRC filter

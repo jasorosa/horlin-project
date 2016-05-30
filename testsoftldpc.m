@@ -9,14 +9,14 @@ TDEMAPPING = 1;
 TMAPPING = 1;
 
 %general
-NSYM = 1024;
+NSYM = 2^13;
 FM = 1e6; %symbol frequency, also defines the cutoff frequency for the rrc filters
 FS = 5*FM;
 BPS = 1; %Bits per symbol
 NBITS = BPS*NSYM; %SE
 
 %noise
-E_B_OVER_N_0 = 6; %ratio of energy_bit/noise energy in dB (typ. 10)
+E_B_OVER_N_0 = 7; %ratio of energy_bit/noise energy in dB (typ. 10)
 
 %rrc filter
 BETA = 0.3; %Rolloff factor of the RRC filter

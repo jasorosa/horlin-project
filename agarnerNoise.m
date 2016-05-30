@@ -29,8 +29,7 @@ DSMP = round(0.45*FS/FM);
 h_rrc = rrcosfilter(BETA, FM, NTAPS);
 
 f = figure; hold all;
-stdv = [];
-bad = [];
+stdv = zeros(length(EBN0), 1);
 for i = 1:length(EBN0)
         fprintf('noise:%d/%d\n',i,length(EBN0));
         sent = bitGenerator(NBITS);
@@ -49,18 +48,7 @@ for i = 1:length(EBN0)
 
         [~, epsilon] = gardner(gardnersampled, K);
         smperror = (DSMP - epsilon.*FS/FM)./FS;
-        next = sqrt(var(smperror)); 
-        if i == 1 || (next < stdv(end) && next> stdv(end)/4)
-            stdv(end+1) = next;
-            disp coucou
-        else
-            next
-            stdv(end)
-            bad(end+1) = i;
-        end
-end
-for i = bad(end:-1:1)
-    EBN0 = [EBN0(1:i-1) EBN0(i+1:end)];
+        stdv(i) = sqrt(var(smperror(end-NSYM+1000:end)));
 end
 plot(EBN0,stdv);
 title('Impact of noise on Gardner')

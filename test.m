@@ -2,13 +2,14 @@ close all; clear all;
 
 global FS FM FSGARDNER;
 global TFILTERGEN TMAPPING TDEMAPPING...
-    TRX TGARDNER;
+    TRX TGARDNER TFRAME;
 
 TFILTERGEN = 0;
-TRX = 1;
+TRX = 0;
 TDEMAPPING = 0;
 TMAPPING = 0;
-TGARDNER = 1;
+TGARDNER = 0;
+TFRAME = 1;
 
 %general
 NSYM = 1e3;
@@ -26,7 +27,7 @@ NTAPS = 20; %of the RRC filter
 
 %cfo
 FC = 2e9; %for CFO
-DF = 0;
+DF = 10e-6;
 
 %Gardner
 FSGARDNER = 8*FM;
@@ -34,7 +35,7 @@ K = .05;
 DSMP = 4;
 
 %frame acquisition
-N = 40;
+NWIN = 40;
 KWIN = 12;
 
 %LDPC
@@ -49,7 +50,7 @@ infobits = bitGenerator(NBITS);
 [sent, H] = encoder(H0, infobits');
 sent = sent';
 h_rrc = rrcosfilter(BETA, FM, NTAPS);
-pilotSymbol = mapping(sent(1:N), BPS, 'qam');
+pilotSymbol = mapping(sent(1:NWIN), BPS, 'qam');
 
 modulated = mapping(sent, BPS, 'qam');
 if TMAPPING
@@ -70,9 +71,10 @@ gardnersampled = oversampled(1+DSMP:FS/FSGARDNER:end);
 
 modulated = gardner(gardnersampled, K);
 
-%[nHat cfoHat] = frameAcq(pilotSymbol, modulated, N, KWIN);
+[nHat, cfoHat] = frameAcq(pilotSymbol, modulated, NWIN/BPS, KWIN);
+modulated = modulated(nHat:end);
+modulated = cfo(modulated,cfoHat,0);
 
-modulated = modulated/sqrt(sum(abs(modulated).^2)/NSYM);
 if TDEMAPPING
     figure;
     scatter(real(modulated), imag(modulated)); % show the constellation
