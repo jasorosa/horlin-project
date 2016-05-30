@@ -1,7 +1,7 @@
 function oblk = tanner(cblk,H)
     error = mod(H*cblk,2);
     cblk = cblk';
-    vote = cblk;
+    vote = zeros(size(cblk));
     for i=1:length(error)
         vote = vote + (xor(error(i),cblk)).*H(i,:);
     end

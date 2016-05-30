@@ -10,7 +10,7 @@ TMAPPING = 0;
 TGARDNER = 1;
 
 %general
-NSYM = 2^18;
+NSYM = 2^8;
 FM = 1e6; %symbol frequency, also defines the cutoff frequency for the rrc filters
 FS = 4*FM;
 BPS = 4; %Bits per symbol
